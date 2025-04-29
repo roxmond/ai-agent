@@ -1,20 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
-import { appendToMemory, recallMemory } from "@/app/lib/memory"; // adjust if needed
+import { appendToMemory, recallMemory } from "@/app/agent/memory";
+import { PERSONA } from "@/app/agent/personality";
 
 export async function POST(req: NextRequest) {
   const { prompt } = await req.json();
   console.log("Received prompt:", prompt);
 
   try {
-    // 🧠 Recall relevant memory
-    const memory = recallMemory(prompt.split(" ")); // or use NLP for better matching
+    // Recall relevant memory
+    const memory = recallMemory(prompt.split(" "));
     const memoryContext = memory
       .map((msg) => `${msg.role}: ${msg.content}`)
       .join("\n");
 
-    // 🧠 Build contextual prompt
+    // Build contextual prompt
     const fullPrompt = memoryContext
-      ? `${memoryContext}\nuser: ${prompt}`
+      ? `${memoryContext}\n${PERSONA}\nuser: ${prompt}`
       : prompt;
 
     const response = await fetch("http://localhost:11434/api/generate", {
