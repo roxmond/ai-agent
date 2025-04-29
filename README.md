@@ -1,36 +1,96 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI Basic Agent
+
+This barebones AI agent is designed for easy customization and adaptability across a wide range of use cases. It already includes expandable **Personality**, **Goal**, and **Memory** features, with the flexibility to add even more.
+
+Employing **Ollama** and the efficient **llama3** model, this project's LLM capabilities are integrated within a **Next.js** architecture. The codebase benefits from the maintainability of **TypeScript**, while the user interface is styled elegantly using **Tailwind CSS** in conjunction with **DaisyUI**.
 
 ## Getting Started
 
-First, run the development server:
+### Step 1.
+
+Download [Ollama](https://ollama.com/download) for your system and then use:
+
+```bash
+ollama pull llama3
+```
+
+This command retrieves the precise model the Agent is configured to use, but feel free to experiment with other models. Note that if you switch models, you'll need to update the `route.ts` file.
+
+`src/api/ollama/route.ts`
+
+```
+body: JSON.stringify({
+        model: "llama3", // <--
+        ...
+      }),
+```
+
+You can find other Ollama models [here](https://ollama.com/search).
+
+Then you can run the model to your console.
+
+```bash
+ollama run llama3
+```
+
+Or open [http://localhost:11434](http://localhost:11434) to see if the `Ollama is runing`.
+
+### Step 2.
+
+Clone the repository to your desired directory.
+
+```bash
+git clone git@github.com:roxmond/ai-agent.git
+```
+
+Install the dependencies. _(Node.js required)_
+
+```bash
+npm install
+```
+
+<details>
+  <summary>Node.js</summary>
+
+To install Node.js follow the instructions [here](https://nodejs.org/en).
+
+</details>
+<br>
+
+Run the localhost.
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Step 3.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+To modify the behaviour of the agent you can simply modify the following files.
 
-## Learn More
+`src/app/agent/personality.ts`
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+export const PERSONA = `Add the personality here.`;
+# Also on this section you can name your Agent.
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+`src/app/agent/goal.ts`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+export const GOAL = `Your goal is to help the world`;
+```
 
-## Deploy on Vercel
+On the `memory.json` you can fine the recent prompts and responses.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+`data/memory.json`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+{
+  "messages": [],
+  "facts": [],
+  "tasks": [],
+  "goals": []
+}
+```

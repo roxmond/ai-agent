@@ -1,4 +1,4 @@
-// lib/memory.ts
+// src/app/agent/memory.ts
 import fs from "fs";
 import path from "path";
 
