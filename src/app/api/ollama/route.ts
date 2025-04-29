@@ -1,10 +1,22 @@
-// src/app/api/ollama/route.ts
 import { NextRequest, NextResponse } from "next/server";
+import { appendToMemory, recallMemory } from "@/app/lib/memory"; // adjust if needed
 
 export async function POST(req: NextRequest) {
   const { prompt } = await req.json();
   console.log("Received prompt:", prompt);
+
   try {
+    // 🧠 Recall relevant memory
+    const memory = recallMemory(prompt.split(" ")); // or use NLP for better matching
+    const memoryContext = memory
+      .map((msg) => `${msg.role}: ${msg.content}`)
+      .join("\n");
+
+    // 🧠 Build contextual prompt
+    const fullPrompt = memoryContext
+      ? `${memoryContext}\nuser: ${prompt}`
+      : prompt;
+
     const response = await fetch("http://localhost:11434/api/generate", {
       method: "POST",
       headers: {
@@ -12,7 +24,7 @@ export async function POST(req: NextRequest) {
       },
       body: JSON.stringify({
         model: "llama3",
-        prompt: prompt,
+        prompt: fullPrompt,
         stream: false,
       }),
     });
@@ -20,6 +32,10 @@ export async function POST(req: NextRequest) {
     const textResponse = await response.text();
     console.log("Response from Ollama:", textResponse);
     const data = JSON.parse(textResponse);
+
+    // 🧠 Save new interaction to memory
+    appendToMemory("messages", { role: "user", content: prompt });
+    appendToMemory("messages", { role: "ai", content: data.response });
 
     return NextResponse.json(data);
   } catch (error) {

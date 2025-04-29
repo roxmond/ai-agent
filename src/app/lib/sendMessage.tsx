@@ -1,3 +1,4 @@
+// /lib/sendMessage.tsx
 "use client";
 import { Dispatch, ReactNode } from "react";
 import OllamaErrorDisplay from "@/app/components/consoleUI/OllamaErrorDisplay";
