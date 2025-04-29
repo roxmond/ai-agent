@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { appendToMemory, recallMemory } from "@/app/agent/memory";
 import { PERSONA } from "@/app/agent/personality";
+import { GOAL } from "@/app/agent/goal";
 
 export async function POST(req: NextRequest) {
   const { prompt } = await req.json();
@@ -15,7 +16,7 @@ export async function POST(req: NextRequest) {
 
     // Build contextual prompt
     const fullPrompt = memoryContext
-      ? `${memoryContext}\n${PERSONA}\nuser: ${prompt}`
+      ? `${PERSONA}\n${GOAL}\n${memoryContext}\nuser: ${prompt}`
       : prompt;
 
     const response = await fetch("http://localhost:11434/api/generate", {
